@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b16"><title>Inscritos Play</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0b16;--line:#333352;--cyan:#57eaff;--purple:#9270ff;--muted:#a9aac4}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#25234d,#0b0b16 52%);font-family:system-ui,Segoe UI,Arial,sans-serif;color:#f7f7ff}
+header{text-align:center;padding:30px 14px 10px}.logo{font-size:clamp(29px,6vw,46px);font-weight:950}.logo span{color:var(--cyan)}header p{color:var(--muted);max-width:640px;margin:8px auto}
+main{width:min(1050px,calc(100% - 22px));margin:14px auto 35px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:15px}
+.card{background:#151528ed;border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 14px 38px #0004}.full{grid-column:1/-1}
+h2{font-size:19px;margin:0 0 12px}label{display:block;color:#c9c9e2;font-size:13px;margin:12px 0 6px}
+input,select,button{font:inherit;width:100%;border-radius:10px;padding:11px;border:1px solid #38385d;background:#0e0e1b;color:#fff}
+button,a.btn{display:block;text-align:center;text-decoration:none;border:0;background:linear-gradient(100deg,#6c5cff,#27cfe9);font-weight:800;color:#080819;cursor:pointer;margin-top:12px;border-radius:10px;padding:12px}
+button.secondary{background:#272744;color:#fff;border:1px solid #3a3a61}.copy{background:#1b5361;color:#fff;border:1px solid #298ba0}
+.muted{color:var(--muted);font-size:13px;line-height:1.5}.status{font-size:13px;color:var(--cyan);min-height:18px;margin-top:10px;overflow-wrap:anywhere}
+.hero{border-color:#4b44a8;background:linear-gradient(135deg,#1c1a3d,#151528)}.steps{margin:10px 0 0;padding-left:20px;color:#d6d6ee;font-size:14px;line-height:1.7}
+.table-wrap{overflow-x:auto;border:1px solid #333352;border-radius:12px;margin-top:12px}table{border-collapse:collapse;width:100%;min-width:620px;background:#101020}
+th,td{text-align:left;padding:11px;border-bottom:1px solid #2b2b49;font-size:13px}th{color:#bcbce0;background:#191930}td code,.big{color:var(--cyan);font-weight:800}
+.actions{display:flex;gap:6px}.actions button{margin:0;min-width:90px}.empty{padding:18px;color:var(--muted);font-size:14px}.hidden{display:none!important}
+.pill{display:inline-block;border:1px solid #3c3c60;border-radius:999px;padding:4px 10px;color:#c6c6e8;font-size:12px}.pill.ok{border-color:#2a8a5a;color:#7dffb7}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}footer{text-align:center;color:#9293b2;font-size:12px;padding:0 18px 26px}
+@media(max-width:600px){.actions{flex-direction:column}.actions button{min-width:0}}
+</style>
+</head>
+<body>
+<header><div class="logo">INSCRITOS <span>PLAY</span></div><p>Crie ou ache salas de Among Us da comunidade. Sem cadastro, sem senha.</p></header>
+<main>
+<section class="card hero full">
+<h2>⬇️ Baixar o theo.exe</h2>
+<p class="muted">Instalador e desinstalador do plugin para Steam. Ele coloca o plugin em <code>Among Us_Data\Plugins\x86_64</code> e liga o jogo ao site neste computador.</p>
+<a class="btn" href="theo.exe" download>Baixar theo.exe (Windows)</a>
+<ol class="steps"><li>Baixe e abra o <b>theo.exe</b>.</li><li>Escolha <b>1 — Instalar</b> (ou <b>2 — Desinstalar</b> para remover).</li><li>Escolha <b>4 — Iniciar ponte</b> e deixe aberto enquanto joga.</li></ol>
+<div class="row" style="margin-top:12px"><span class="pill" id="bridgePill">Ponte local: verificando…</span></div>
+</section>
+
+<section class="card" id="createCard">
+<h2>🚀 Criar sala</h2>
+<form id="createRoomForm">
+<label>Seu apelido</label><input id="nick" maxlength="24" minlength="2" required placeholder="Como te chamam">
+<label>Nome da sala</label><input id="roomName" maxlength="45" required placeholder="Jogatina dos inscritos">
+<label>Privacidade</label><select id="roomPrivacy"><option value="public">Pública</option><option value="private">Privada (só com o código)</option></select>
+<label>Código da partida Among Us</label><input id="gameCode" maxlength="12" placeholder="Preenche sozinho se a ponte estiver ativa">
+<button type="submit">Criar sala</button></form><div class="status" id="createStatus"></div>
+</section>
+
+<section class="card" id="joinCard">
+<h2>🔑 Entrar por código</h2><p class="muted">Use o código de 6 caracteres que o anfitrião compartilhou.</p>
+<label>Código da sala</label><input id="joinCode" maxlength="6" style="text-transform:uppercase" placeholder="Ex.: A1B2C3">
+<button id="joinBtn">Ver detalhes</button><div class="status" id="joinStatus"></div><div id="joinDetails"></div>
+</section>
+
+<section class="card full">
+<h2>📋 Salas públicas</h2>
+<div class="table-wrap"><table><thead><tr><th>Sala</th><th>Anfitrião</th><th>Código da sala</th><th>Partida</th><th>Ações</th></tr></thead><tbody id="roomsTable"></tbody></table><div id="roomsEmpty" class="empty">Carregando salas...</div></div>
+<div class="row"><button class="secondary" id="refreshBtn" style="max-width:200px">Atualizar</button></div><div class="status" id="roomsStatus"></div>
+</section>
+
+<section class="card full" id="mineCard">
+<h2>🎮 Minhas salas</h2><p class="muted">Atualize o código da partida (a ponte faz isso sozinha se estiver ativa) ou apague a sala.</p>
+<div id="mine"></div><div class="status" id="hostStatus"></div>
+</section>
+</main><footer>Inscritos Play • Não afiliado oficialmente ao Among Us</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='COLE_AQUI_A_URL_DO_SEU_PROJETO';
+const SUPABASE_ANON_KEY='COLE_AQUI_A_CHAVE_PUBLICA_ANON';
+const BRIDGE='http://127.0.0.1:47077/status';
+const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_URL.includes('COLE_AQUI')&&!SUPABASE_ANON_KEY.includes('COLE_AQUI');
+const $=id=>document.getElementById(id);
+const msg=(id,t)=>{$(id).textContent=t};
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const makeCode=()=>{const a=new Uint32Array(1);crypto.getRandomValues(a);return a[0].toString(36).toUpperCase().padStart(6,'0').slice(-6)};
+let sb=null,uid=null,detected='';
+try{$('nick').value=localStorage.getItem('nick')||''}catch{}
+
+async function init(){
+  pollBridge();setInterval(pollBridge,3000);
+  if(!configured){msg('roomsStatus','Configure o Supabase (veja o LEIA-ME.txt). Até lá, a lista de salas fica desativada.');$('roomsEmpty').textContent='Backend não configurado.';return}
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  let {data:{session}}=await sb.auth.getSession();
+  if(!session){const r=await sb.auth.signInAnonymously();if(r.error){msg('roomsStatus','Ative "Allow anonymous sign-ins" no Supabase: '+r.error.message);return}session=r.data.session}
+  uid=session.user.id;await refresh();setInterval(loadRooms,15000);
+}
+async function pollBridge(){
+  try{const r=await fetch(BRIDGE,{cache:'no-store'});const j=await r.json();
+    $('bridgePill').textContent='Ponte local: conectada'+(j.gameCode?' · código '+j.gameCode:'');$('bridgePill').className='pill ok';
+    detected=j.gameCode||'';
+    if(detected&&!$('gameCode').value)$('gameCode').value=detected;
+    if(detected&&sb&&uid)syncMine(detected);
+  }catch{$('bridgePill').textContent='Ponte local: desligada (abra o theo.exe → opção 4)';$('bridgePill').className='pill';detected=''}
+}
+let lastSynced='';
+async function syncMine(code){
+  if(code===lastSynced)return;
+  const {data}=await sb.from('rooms').select('id').eq('host_id',uid).order('created_at',{ascending:false}).limit(1);
+  if(!data?.length)return;
+  const {error}=await sb.from('rooms').update({game_code:code}).eq('id',data[0].id).eq('host_id',uid);
+  if(!error){lastSynced=code;msg('hostStatus','Código '+code+' enviado para sua sala mais recente.');loadRooms();loadMine()}
+}
+async function refresh(){await Promise.all([loadRooms(),loadMine()])}
+async function loadRooms(){
+  if(!sb)return;
+  const {data,error}=await sb.from('rooms').select('id,name,host_name,game_code').eq('privacy','public').order('created_at',{ascending:false}).limit(100);
+  if(error){msg('roomsStatus','Erro: '+error.message);return}
+  msg('roomsStatus','');
+  $('roomsTable').innerHTML=(data||[]).map(r=>`<tr><td>${esc(r.name)}</td><td>${esc(r.host_name)}</td><td><code>${esc(r.id)}</code></td><td>${r.game_code?`<code>${esc(r.game_code)}</code>`:'<span class="muted">—</span>'}</td><td><div class="actions"><button class="copy" data-copy="${esc(r.game_code||r.id)}">Copiar ${r.game_code?'partida':'sala'}</button><button data-open="${esc(r.id)}">Detalhes</button></div></td></tr>`).join('');
+  $('roomsEmpty').style.display=data?.length?'none':'block';if(!data?.length)$('roomsEmpty').textContent='Nenhuma sala pública no momento.';
+}
+async function loadMine(){
+  if(!sb||!uid)return;
+  const {data}=await sb.from('rooms').select('id,name,privacy,game_code').eq('host_id',uid).order('created_at',{ascending:false});
+  $('mine').innerHTML=(data||[]).length?data.map(r=>`<div class="row" style="margin:10px 0;gap:10px"><b>${esc(r.name)}</b><span class="pill">${r.privacy==='public'?'pública':'privada'}</span><code class="big">${esc(r.id)}</code><input style="max-width:150px" data-code="${esc(r.id)}" maxlength="12" placeholder="Código partida" value="${esc(r.game_code||'')}"><button class="secondary" style="width:auto;margin:0" data-save="${esc(r.id)}">Salvar</button><button class="secondary" style="width:auto;margin:0" data-del="${esc(r.id)}">Apagar</button></div>`).join(''):'<p class="muted">Você ainda não criou salas neste navegador.</p>';
+}
+async function findRoom(){
+  if(!sb)return;const id=$('joinCode').value.trim().toUpperCase();if(id.length!==6){msg('joinStatus','O código tem 6 caracteres.');return}
+  const {data,error}=await sb.rpc('get_room_by_code',{p_id:id});
+  if(error){msg('joinStatus',error.message);return}
+  const r=data?.[0];if(!r){msg('joinStatus','Sala não encontrada.');$('joinDetails').innerHTML='';return}
+  msg('joinStatus','Sala encontrada.');
+  $('joinDetails').innerHTML=`<p><b>${esc(r.name)}</b><br>Anfitrião: ${esc(r.host_name)}<br>Código Among Us: <code class="big">${r.game_code?esc(r.game_code):'ainda não informado'}</code></p>${r.game_code?`<button class="copy" data-copy="${esc(r.game_code)}">Copiar código Among Us</button>`:''}`;
+}
+async function copy(t){try{await navigator.clipboard.writeText(t);msg('roomsStatus','Copiado: '+t)}catch{prompt('Copie:',t)}}
+document.addEventListener('click',async e=>{
+  const t=e.target;
+  if(t.dataset.copy)copy(t.dataset.copy);
+  if(t.dataset.open){$('joinCode').value=t.dataset.open;findRoom();$('joinCard').scrollIntoView({behavior:'smooth'})}
+  if(t.dataset.save){const code=document.querySelector(`[data-code="${t.dataset.save}"]`).value.trim().toUpperCase();const {error}=await sb.from('rooms').update({game_code:code||null}).eq('id',t.dataset.save).eq('host_id',uid);msg('hostStatus',error?'Erro: '+error.message:'Código salvo!');refresh()}
+  if(t.dataset.del&&confirm('Apagar esta sala?')){const {error}=await sb.from('rooms').delete().eq('id',t.dataset.del).eq('host_id',uid);msg('hostStatus',error?'Erro: '+error.message:'Sala apagada.');refresh()}
+});
+$('joinBtn').addEventListener('click',findRoom);$('refreshBtn').addEventListener('click',refresh);
+$('createRoomForm').addEventListener('submit',async e=>{
+  e.preventDefault();if(!sb||!uid){msg('createStatus','Backend não configurado.');return}
+  const host_name=$('nick').value.trim();try{localStorage.setItem('nick',host_name)}catch{}
+  const row={id:makeCode(),name:$('roomName').value.trim(),host_id:uid,host_name,privacy:$('roomPrivacy').value,game_code:($('gameCode').value.trim().toUpperCase()||detected||null)};
+  msg('createStatus','Criando sala...');
+  const {error}=await sb.from('rooms').insert(row);
+  if(error){msg('createStatus','Erro: '+error.message);return}
+  msg('createStatus','Sala criada! Código para compartilhar: '+row.id);$('roomName').value='';refresh();
+});
+init();
+</script></body></html>

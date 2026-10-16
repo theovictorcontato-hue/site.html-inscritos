@@ -14,10 +14,8 @@
       --card: #12121a;
       --text: #e0e0e0;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; scroll-padding-top: 90px; }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -25,7 +23,6 @@
       min-height: 100vh;
       overflow-x: hidden;
     }
-
     body::before {
       content: '';
       position: fixed;
@@ -40,12 +37,10 @@
       z-index: -1;
       animation: pulse 12s ease-in-out infinite alternate;
     }
-
     @keyframes pulse {
       0% { transform: scale(1); }
       100% { transform: scale(1.1); }
     }
-
     header {
       position: sticky;
       top: 0;
@@ -54,7 +49,6 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(0, 245, 212, 0.15);
     }
-
     .nav {
       max-width: 1100px;
       margin: 0 auto;
@@ -63,7 +57,6 @@
       align-items: center;
       justify-content: space-between;
     }
-
     .logo {
       font-family: 'Orbitron', sans-serif;
       font-weight: 900;
@@ -72,18 +65,15 @@
       text-decoration: none;
       letter-spacing: 1px;
     }
-
     .logo span {
       color: var(--neon);
       text-shadow: 0 0 12px var(--neon);
     }
-
     .nav-links {
       display: flex;
       gap: 8px;
       list-style: none;
     }
-
     .nav-links a {
       color: #aaa;
       text-decoration: none;
@@ -93,25 +83,21 @@
       border-radius: 8px;
       transition: all 0.2s;
     }
-
     .nav-links a:hover,
     .nav-links a.active {
       color: var(--neon);
       background: rgba(0, 245, 212, 0.1);
       box-shadow: 0 0 15px rgba(0, 245, 212, 0.15);
     }
-
     main {
       max-width: 1100px;
       margin: 0 auto;
       padding: 40px 24px 80px;
     }
-
     .hero {
       text-align: center;
       padding: 60px 20px 50px;
     }
-
     .hero-badge {
       display: inline-block;
       font-size: 0.75rem;
@@ -125,7 +111,6 @@
       margin-bottom: 24px;
       box-shadow: 0 0 20px rgba(0, 245, 212, 0.15);
     }
-
     .hero h1 {
       font-family: 'Orbitron', sans-serif;
       font-size: 3.2rem;
@@ -137,21 +122,18 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-
     .hero p {
       font-size: 1.15rem;
       color: #999;
       max-width: 520px;
       margin: 0 auto 36px;
     }
-
     .hero-btns {
       display: flex;
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
@@ -165,36 +147,21 @@
       border: none;
       cursor: pointer;
     }
-
     .btn-neon {
       background: var(--neon);
       color: #000;
       box-shadow: 0 0 25px rgba(0, 245, 212, 0.4);
     }
-
     .btn-neon:hover {
       box-shadow: 0 0 40px rgba(0, 245, 212, 0.7);
       transform: translateY(-2px);
     }
-
-    .btn-outline {
-      background: transparent;
-      color: var(--neon);
-      border: 1px solid rgba(0, 245, 212, 0.5);
-    }
-
-    .btn-outline:hover {
-      background: rgba(0, 245, 212, 0.1);
-      box-shadow: 0 0 20px rgba(0, 245, 212, 0.2);
-    }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 20px;
       margin-top: 50px;
     }
-
     .card {
       background: var(--card);
       border: 1px solid rgba(255,255,255,0.06);
@@ -204,67 +171,49 @@
       position: relative;
       overflow: hidden;
     }
-
     .card::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       height: 2px;
       background: linear-gradient(90deg, var(--neon), var(--neon2), var(--neon3));
       opacity: 0;
       transition: opacity 0.3s;
     }
-
     .card:hover {
       border-color: rgba(0, 245, 212, 0.3);
       transform: translateY(-4px);
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
-
-    .card:hover::before {
-      opacity: 1;
-    }
-
+    .card:hover::before { opacity: 1; }
     .card-icon {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       border-radius: 12px;
       background: rgba(0, 245, 212, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 1.4rem;
       margin-bottom: 18px;
       color: var(--neon);
     }
-
     .card h3 {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.1rem;
       margin-bottom: 8px;
       color: #fff;
     }
-
     .card p {
       color: #888;
       font-size: 0.9rem;
       line-height: 1.5;
       margin-bottom: 16px;
     }
-
     .card a {
       color: var(--neon);
       font-weight: 600;
       font-size: 0.9rem;
       text-decoration: none;
     }
-
-    .card a:hover {
-      text-shadow: 0 0 8px var(--neon);
-    }
-
+    .card a:hover { text-shadow: 0 0 8px var(--neon); }
     .section-title {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.4rem;
@@ -273,19 +222,13 @@
       align-items: center;
       gap: 12px;
     }
-
     .section-title::after {
       content: '';
       flex: 1;
       height: 1px;
       background: linear-gradient(90deg, rgba(0,245,212,0.4), transparent);
     }
-
-    .salas-list {
-      display: grid;
-      gap: 12px;
-    }
-
+    .salas-list { display: grid; gap: 12px; }
     .sala {
       background: var(--card);
       border: 1px solid rgba(255,255,255,0.06);
@@ -295,12 +238,13 @@
       align-items: center;
       gap: 16px;
       transition: all 0.2s;
+      flex-wrap: wrap;
     }
-
-    .sala:hover {
-      border-color: rgba(0, 245, 212, 0.3);
+    .sala:hover { border-color: rgba(0, 245, 212, 0.3); }
+    .sala.owner {
+      border-color: rgba(0, 245, 212, 0.45);
+      box-shadow: 0 0 20px rgba(0, 245, 212, 0.12);
     }
-
     .sala-code {
       font-family: 'Orbitron', sans-serif;
       font-weight: 700;
@@ -313,29 +257,36 @@
       text-align: center;
       letter-spacing: 1px;
     }
-
-    .sala.rara .sala-code {
-      color: var(--neon3);
-      background: rgba(255, 0, 110, 0.12);
-      box-shadow: 0 0 12px rgba(255, 0, 110, 0.2);
+    .sala.owner .sala-code {
+      color: #000;
+      background: var(--neon);
+      box-shadow: 0 0 14px rgba(0, 245, 212, 0.35);
     }
-
-    .sala-info {
-      flex: 1;
-    }
-
+    .sala-info { flex: 1; min-width: 140px; }
     .sala-name {
       font-weight: 600;
       color: #fff;
       font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-
+    .badge-owner {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #000;
+      background: var(--neon);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
     .sala-meta {
       font-size: 0.8rem;
       color: #777;
       margin-top: 2px;
     }
-
     .btn-copy {
       background: transparent;
       border: 1px solid rgba(0, 245, 212, 0.4);
@@ -347,57 +298,10 @@
       cursor: pointer;
       transition: all 0.2s;
     }
-
     .btn-copy:hover {
       background: rgba(0, 245, 212, 0.15);
       box-shadow: 0 0 15px rgba(0, 245, 212, 0.25);
     }
-
-    .rank-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .rank-item {
-      background: var(--card);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 12px;
-      padding: 14px 18px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .rank-item.top {
-      border-color: rgba(0, 245, 212, 0.35);
-      box-shadow: 0 0 20px rgba(0, 245, 212, 0.1);
-    }
-
-    .rank-num {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-
-    .r1 { background: linear-gradient(135deg, #00f5d4, #00c9a7); color: #000; }
-    .r2 { background: #555; color: #fff; }
-    .r3 { background: #7b2cbf; color: #fff; }
-
-    .rank-info { flex: 1; }
-    .rank-name { font-weight: 600; color: #fff; }
-    .rank-meta { font-size: 0.8rem; color: #777; }
-    .rank-pts {
-      font-family: 'Orbitron', sans-serif;
-      font-weight: 700;
-      color: var(--neon);
-    }
-
     .download-box {
       background: linear-gradient(135deg, rgba(0,245,212,0.08), rgba(123,44,191,0.08));
       border: 1px solid rgba(0, 245, 212, 0.25);
@@ -406,19 +310,13 @@
       text-align: center;
       margin-top: 50px;
     }
-
     .download-box h2 {
       font-family: 'Orbitron', sans-serif;
       font-size: 1.5rem;
       margin-bottom: 12px;
       color: #fff;
     }
-
-    .download-box p {
-      color: #999;
-      margin-bottom: 24px;
-    }
-
+    .download-box p { color: #999; margin-bottom: 24px; }
     footer {
       text-align: center;
       padding: 40px 24px;
@@ -426,7 +324,6 @@
       font-size: 0.85rem;
       border-top: 1px solid rgba(255,255,255,0.05);
     }
-
     @media (max-width: 700px) {
       .hero h1 { font-size: 2.2rem; }
       .nav { flex-direction: column; gap: 8px; padding: 12px 16px; }
@@ -436,7 +333,6 @@
   </style>
 </head>
 <body id="top">
-
   <header>
     <nav class="nav">
       <a href="#top" class="logo">Theo<span>BR</span></a>
@@ -447,17 +343,15 @@
       </ul>
     </nav>
   </header>
-
   <main>
     <section class="hero">
       <div class="hero-badge">Servidor Brasileiro</div>
       <h1>TheoBR</h1>
       <p>Comunidade brasileira de Among Us. Mod oficial para a comunidade.</p>
       <div class="hero-btns">
-        <a href="#download" class="btn btn-neon">⬇ Baixar Mod (ZIP)</a>
+        <a href="https://www.mediafire.com/file/4n5qe19bvg2b1ip/TheoBR_Site_corrigido.zip/file" class="btn btn-neon" target="_blank" rel="noopener">⬇ Baixar Mod (ZIP)</a>
       </div>
     </section>
-
     <div class="grid">
       <div class="card">
         <div class="card-icon">🚀</div>
@@ -466,93 +360,112 @@
         <a href="#download">Baixar agora →</a>
       </div>
     </div>
-
     <h2 class="section-title" id="salas">Salas Abertas</h2>
-    <div class="salas-list" id="salas-list"><div class="sala"><div class="sala-info"><div class="sala-meta">Carregando…</div></div></div></div>
-
+    <div class="salas-list" id="salas-list"></div>
     <div class="download-box" id="download">
       <h2>Baixar TheoBR Mod</h2>
       <p>Pacote ZIP com o mod + instalador (.bat) + desinstalador.</p>
-      <a href="TheoBR_Mod.zip" id="dl-btn" class="btn btn-neon" download>⬇ Baixar TheoBR_Mod.zip</a>
-      <p style="margin-top:14px;font-size:.85rem"><a href="mod.dll" download style="color:var(--neon)">ou baixar só o mod.dll</a></p>
-      <p id="dl-msg" style="margin:16px 0 0;font-size:.85rem"></p>
+      <a href="https://www.mediafire.com/file/4n5qe19bvg2b1ip/TheoBR_Site_corrigido.zip/file" id="dl-btn" class="btn btn-neon" target="_blank" rel="noopener">⬇ Baixar TheoBR_Mod.zip</a>
     </div>
   </main>
-
   <footer>
     TheoBR · Comunidade Brasileira de Among Us
   </footer>
-
   <script>
-    // ===== CONFIG: link direto do seu ZIP (GitHub Releases, Drive, CDN...). Vazio = usa o arquivo TheoBR_Mod.zip ao lado do index.html
-    var MOD_ZIP_URL = "https://www.mediafire.com/file/4n5qe19bvg2b1ip/TheoBR_Site_corrigido.zip/file";
+    // ============================================================
+    //  SALAS — edite só aqui (sem URL, sem servidor)
+    //  owner: true = Dono do servidor (ID 0002e0ed8b84476cb5735e703cc347af)
+    // ============================================================
+    var SALAS = [
+      {
+        code: "ABC123",
+        name: "Sala TheoBR",
+        map: "The Skeld",
+        players: 8,
+        max: 15,
+        owner: true
+      },
+      {
+        code: "XYZ789",
+        name: "Ranked BR",
+        map: "Polus",
+        players: 12,
+        max: 15,
+        owner: false
+      },
+      {
+        code: "QWE456",
+        name: "Casual",
+        map: "Mira HQ",
+        players: 5,
+        max: 10,
+        owner: false
+      }
+    ];
+    // ============================================================
 
-    var dl = document.getElementById('dl-btn');
-    if (MOD_ZIP_URL) dl.href = MOD_ZIP_URL;
-
-    // ===== SALAS REAIS =====
-    // ROOMS_API_URL: endpoint que devolve JSON [{"code":"ABCDEF","name":"...","map":"The Skeld","players":4,"max":15}]
-    // O mod envia a sala quando alguem cria uma. Sem API ou sem salas = lista vazia (nada falso).
-    var ROOMS_API_URL = "[
-  {
-    "code": "ABC123",
-    "name": "Sala TheoBR",
-    "map": "The Skeld",
-    "players": 8,
-    "max": 15
-  },
-  {
-    "code": "XYZ789",
-    "name": "Ranked BR",
-    "map": "Polus",
-    "players": 12,
-    "max": 15
-  },
-  {
-    "code": "QWE456",
-    "name": "Casual",
-    "map": "Mira HQ",
-    "players": 5,
-    "max": 10
-  }
-]";
     var list = document.getElementById('salas-list');
-    function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
-    function empty(msg) { list.innerHTML = '<div class="sala"><div class="sala-info"><div class="sala-meta">' + msg + '</div></div></div>'; }
-    function render(rooms) {
-      if (!rooms || !rooms.length) return empty('Nenhuma sala aberta agora.');
-      list.innerHTML = rooms.map(function (r) {
-        return '<div class="sala"><div class="sala-code">' + esc(r.code) + '</div><div class="sala-info"><div class="sala-name">' + esc(r.name || 'Sala') +
-          '</div><div class="sala-meta">' + esc(r.map) + ' · ' + esc(r.players) + '/' + esc(r.max || 15) + '</div></div><button class="btn-copy" type="button" data-code="' + esc(r.code) + '">Copiar</button></div>';
+
+    function esc(t) {
+      var d = document.createElement('div');
+      d.textContent = t == null ? '' : t;
+      return d.innerHTML;
+    }
+
+    function render() {
+      if (!SALAS || !SALAS.length) {
+        list.innerHTML = '<div class="sala"><div class="sala-info"><div class="sala-meta">Nenhuma sala aberta agora.</div></div></div>';
+        return;
+      }
+      // Dono primeiro
+      var ordered = SALAS.slice().sort(function (a, b) {
+        if (a.owner && !b.owner) return -1;
+        if (!a.owner && b.owner) return 1;
+        return 0;
+      });
+      list.innerHTML = ordered.map(function (r) {
+        var ownerClass = r.owner ? ' owner' : '';
+        var badge = r.owner ? '<span class="badge-owner">Dono do servidor</span>' : '';
+        return '<div class="sala' + ownerClass + '">' +
+          '<div class="sala-code">' + esc(r.code) + '</div>' +
+          '<div class="sala-info">' +
+            '<div class="sala-name">' + esc(r.name || 'Sala') + badge + '</div>' +
+            '<div class="sala-meta">' + esc(r.map || '—') + ' · ' + esc(r.players) + '/' + esc(r.max || 15) + '</div>' +
+          '</div>' +
+          '<button class="btn-copy" type="button" data-code="' + esc(r.code) + '">Copiar</button>' +
+        '</div>';
       }).join('');
     }
-    function load() {
-      if (!ROOMS_API_URL) return empty('Nenhuma sala aberta agora.');
-      fetch(ROOMS_API_URL, { cache: 'no-store' }).then(function (r) { return r.json(); }).then(render).catch(function () { empty('Não foi possível carregar as salas.'); });
-    }
+
     list.addEventListener('click', function (e) {
-      var b = e.target.closest('.btn-copy'); if (!b) return;
+      var b = e.target.closest('.btn-copy');
+      if (!b) return;
       var code = b.getAttribute('data-code');
-      var ok = function () { b.textContent = 'Copiado!'; setTimeout(function () { b.textContent = 'Copiar'; }, 1500); };
-      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(code).then(ok);
-      else { var t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); document.execCommand('copy'); document.body.removeChild(t); ok(); }
+      var ok = function () {
+        b.textContent = 'Copiado!';
+        setTimeout(function () { b.textContent = 'Copiar'; }, 1500);
+      };
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(code).then(ok);
+      } else {
+        var t = document.createElement('textarea');
+        t.value = code;
+        document.body.appendChild(t);
+        t.select();
+        document.execCommand('copy');
+        document.body.removeChild(t);
+        ok();
+      }
     });
-    load(); setInterval(load, 15000);
 
-    // Avisa se o ZIP não existir no servidor (em vez de dar erro 404 mudo)
-    dl.addEventListener('click', function (e) {
-      if (location.protocol === 'file:' || MOD_ZIP_URL) return;
-      e.preventDefault();
-      fetch(dl.href, { method: 'HEAD' }).then(function (r) {
-        if (r.ok) { location.href = dl.href; }
-        else { document.getElementById('dl-msg').textContent = 'Arquivo ainda não disponível. Tente novamente mais tarde.'; }
-      }).catch(function () { location.href = dl.href; });
-    });
+    render();
 
-    // Destaca o item do menu da seção visível
+    // Menu ativo
     var links = document.querySelectorAll('.nav-links a');
     var map = {};
-    links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+    links.forEach(function (a) {
+      map[a.getAttribute('href').slice(1)] = a;
+    });
     if ('IntersectionObserver' in window) {
       var io = new IntersectionObserver(function (entries) {
         entries.forEach(function (en) {
@@ -563,7 +476,8 @@
         });
       }, { rootMargin: '-40% 0px -55% 0px' });
       ['top', 'salas', 'download'].forEach(function (id) {
-        var el = document.getElementById(id); if (el) io.observe(el);
+        var el = document.getElementById(id);
+        if (el) io.observe(el);
       });
     }
   </script>

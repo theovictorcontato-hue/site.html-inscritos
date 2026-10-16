@@ -1,0 +1,173 @@
+/**
+ * TheoBR Rooms API (Node puro, sem dependências)
+ * -----------------------------------------------
+ * GET    /rooms                 → lista salas
+ * POST   /rooms                 → cria/atualiza sala
+ * POST   /rooms/:code/heartbeat → renova TTL
+ * DELETE /rooms/:code           → remove sala
+ *
+ * Dono do servidor: 0002e0ed8b84476cb5735e703cc347af
+ */
+
+const http = require('http');
+const { URL } = require('url');
+
+const PORT = process.env.PORT || 3000;
+const OWNER_ACCOUNT_ID = '0002e0ed8b84476cb5735e703cc347af';
+const ROOM_TTL_MS = 3 * 60 * 1000; // 3 min sem heartbeat = some
+
+/** @type {Map<string, object>} */
+const rooms = new Map();
+
+function isOwner(accountId) {
+  return accountId && String(accountId).toLowerCase() === OWNER_ACCOUNT_ID.toLowerCase();
+}
+
+function cleanExpired() {
+  const now = Date.now();
+  for (const [code, room] of rooms.entries()) {
+    if (now - room.updatedAt > ROOM_TTL_MS) rooms.delete(code);
+  }
+}
+
+function toPublic(room) {
+  return {
+    code: room.code,
+    name: room.name,
+    map: room.map,
+    players: room.players,
+    max: room.max,
+    owner: !!room.owner,
+    accountId: room.accountId || null,
+    updatedAt: room.updatedAt
+  };
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let data = '';
+    req.on('data', (chunk) => {
+      data += chunk;
+      if (data.length > 1e6) {
+        req.destroy();
+        reject(new Error('Body muito grande'));
+      }
+    });
+    req.on('end', () => {
+      if (!data) return resolve({});
+      try {
+        resolve(JSON.parse(data));
+      } catch {
+        reject(new Error('JSON inválido'));
+      }
+    });
+    req.on('error', reject);
+  });
+}
+
+function send(res, status, data) {
+  const body = JSON.stringify(data);
+  res.writeHead(status, {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Content-Length': Buffer.byteLength(body)
+  });
+  res.end(body);
+}
+
+const server = http.createServer(async (req, res) => {
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type'
+    });
+    return res.end();
+  }
+
+  const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+  const path = url.pathname.replace(/\/+$/, '') || '/';
+
+  try {
+    if (req.method === 'GET' && path === '/') {
+      return send(res, 200, {
+        name: 'TheoBR Rooms API',
+        endpoints: {
+          'GET /rooms': 'Lista salas',
+          'POST /rooms': 'Cria/atualiza sala',
+          'POST /rooms/:code/heartbeat': 'Renova sala',
+          'DELETE /rooms/:code': 'Remove sala'
+        },
+        ownerId: OWNER_ACCOUNT_ID,
+        rooms: rooms.size
+      });
+    }
+
+    if (req.method === 'GET' && path === '/rooms') {
+      cleanExpired();
+      const list = Array.from(rooms.values())
+        .map(toPublic)
+        .sort((a, b) => {
+          if (a.owner && !b.owner) return -1;
+          if (!a.owner && b.owner) return 1;
+          return b.updatedAt - a.updatedAt;
+        });
+      return send(res, 200, list);
+    }
+
+    if (req.method === 'POST' && path === '/rooms') {
+      const body = await readBody(req);
+      const code = String(body.code || '').trim().toUpperCase();
+      if (!code || code.length < 4) {
+        return send(res, 400, { error: 'code obrigatório (mín. 4 caracteres)' });
+      }
+      const accountId = body.accountId ? String(body.accountId).trim() : null;
+      const existing = rooms.get(code);
+      const room = {
+        code,
+        name: body.name != null ? String(body.name).slice(0, 40) : (existing && existing.name) || 'Sala',
+        map: body.map != null ? String(body.map).slice(0, 30) : (existing && existing.map) || 'The Skeld',
+        players: body.players != null ? Number(body.players) : (existing && existing.players) || 1,
+        max: body.max != null ? Number(body.max) : (existing && existing.max) || 15,
+        accountId: accountId || (existing && existing.accountId) || null,
+        owner: isOwner(accountId) || isOwner(existing && existing.accountId),
+        updatedAt: Date.now()
+      };
+      rooms.set(code, room);
+      return send(res, 200, toPublic(room));
+    }
+
+    const hb = path.match(/^\/rooms\/([A-Za-z0-9]+)\/heartbeat$/);
+    if (req.method === 'POST' && hb) {
+      const code = hb[1].toUpperCase();
+      const room = rooms.get(code);
+      if (!room) return send(res, 404, { error: 'Sala não encontrada' });
+      const body = await readBody(req).catch(() => ({}));
+      if (body.players != null) room.players = Number(body.players);
+      if (body.name != null) room.name = String(body.name).slice(0, 40);
+      if (body.map != null) room.map = String(body.map).slice(0, 30);
+      room.updatedAt = Date.now();
+      return send(res, 200, toPublic(room));
+    }
+
+    const del = path.match(/^\/rooms\/([A-Za-z0-9]+)$/);
+    if (req.method === 'DELETE' && del) {
+      const code = del[1].toUpperCase();
+      if (!rooms.has(code)) return send(res, 404, { error: 'Sala não encontrada' });
+      rooms.delete(code);
+      return send(res, 200, { ok: true, code });
+    }
+
+    send(res, 404, { error: 'Não encontrado' });
+  } catch (err) {
+    send(res, 400, { error: err.message || 'Erro' });
+  }
+});
+
+server.listen(PORT, () => {
+  console.log('TheoBR Rooms API → http://localhost:' + PORT);
+  console.log('GET  /rooms');
+  console.log('POST /rooms  { code, name, map, players, max, accountId }');
+});

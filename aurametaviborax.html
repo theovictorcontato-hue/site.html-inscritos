@@ -30,6 +30,7 @@ th,td{text-align:left;padding:11px;border-bottom:1px solid #2b2b49;font-size:13p
 <h2>⬇️ Baixar o theo.exe</h2>
 <p class="muted">Instalador e desinstalador do plugin para Steam. Ele coloca o plugin em <code>Among Us_Data\Plugins\x86_64</code> e liga o jogo ao site neste computador.</p>
 <a class="btn" href="theo.exe" download>Baixar theo.exe (Windows)</a>
+<button class="secondary" id="copySiteBtn">Copiar link do site</button>
 <ol class="steps"><li>Baixe e abra o <b>theo.exe</b>.</li><li>Escolha <b>1 — Instalar</b> (ou <b>2 — Desinstalar</b> para remover).</li><li>Escolha <b>4 — Iniciar ponte</b> e deixe aberto enquanto joga.</li></ol>
 <div class="row" style="margin-top:12px"><span class="pill" id="bridgePill">Ponte local: verificando…</span></div>
 </section>
@@ -64,9 +65,10 @@ th,td{text-align:left;padding:11px;border-bottom:1px solid #2b2b49;font-size:13p
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPABASE_URL='COLE_AQUI_A_URL_DO_SEU_PROJETO';
-const SUPABASE_ANON_KEY='COLE_AQUI_A_CHAVE_PUBLICA_ANON';
+const SUPABASE_URL='https://ljwnelkjoftutuhcixud.supabase.co';
+const SUPABASE_ANON_KEY='sb_publishable_7DsNGH8C2SQBtcHryk3D8A_XHzgUB1L';
 const BRIDGE='http://127.0.0.1:47077/status';
+let URL_SITE='https://theovictorcontato-hue.github.io/inscritos-play-site/'; // valor reserva; o Supabase (site_config.url_site) tem prioridade
 const configured=SUPABASE_URL.startsWith('https://')&&!SUPABASE_URL.includes('COLE_AQUI')&&!SUPABASE_ANON_KEY.includes('COLE_AQUI');
 const $=id=>document.getElementById(id);
 const msg=(id,t)=>{$(id).textContent=t};
@@ -80,8 +82,18 @@ async function init(){
   if(!configured){msg('roomsStatus','Configure o Supabase (veja o LEIA-ME.txt). Até lá, a lista de salas fica desativada.');$('roomsEmpty').textContent='Backend não configurado.';return}
   sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
   let {data:{session}}=await sb.auth.getSession();
-  if(!session){const r=await sb.auth.signInAnonymously();if(r.error){msg('roomsStatus','Ative "Allow anonymous sign-ins" no Supabase: '+r.error.message);return}session=r.data.session}
-  uid=session.user.id;await refresh();setInterval(loadRooms,15000);
+  if(!session){const r=await sb.auth.signInAnonymously();if(r.error){msg('roomsStatus','Erro no login anônimo ('+(r.error.name||'')+', status '+(r.error.status??'sem resposta')+'): '+r.error.message);diag();return}session=r.data.session}
+  uid=session.user.id;
+  try{const {data:cfg}=await sb.from('site_config').select('value').eq('key','url_site').maybeSingle();if(cfg?.value)URL_SITE=cfg.value}catch{}
+  await refresh();setInterval(loadRooms,15000);
+}
+
+async function diag(){
+  const out=[];out.push('Página: '+location.href);out.push('URL usada: '+SUPABASE_URL);out.push('Chave começa com: '+SUPABASE_ANON_KEY.slice(0,18)+'...');
+  try{const r=await fetch(SUPABASE_URL+'/auth/v1/health',{headers:{apikey:SUPABASE_ANON_KEY}});out.push('Teste 1 (health com chave): HTTP '+r.status+' '+(await r.text()).slice(0,120))}catch(e){out.push('Teste 1 (health com chave): FALHOU - '+e.name+': '+e.message)}
+  try{const r=await fetch(SUPABASE_URL+'/auth/v1/signup',{method:'POST',headers:{apikey:SUPABASE_ANON_KEY,'Content-Type':'application/json'},body:'{}'});out.push('Teste 2 (login anônimo): HTTP '+r.status+' '+(await r.text()).slice(0,160))}catch(e){out.push('Teste 2 (login anônimo): FALHOU - '+e.name+': '+e.message)}
+  let el=$('diagBox');if(!el){el=document.createElement('pre');el.id='diagBox';el.style.cssText='white-space:pre-wrap;word-break:break-all;font-size:12px;color:#ffdf8c;background:#382d18;border:1px solid #66502b;border-radius:10px;padding:10px;margin-top:10px';$('roomsStatus').after(el)}
+  el.textContent=out.join('\n');
 }
 async function pollBridge(){
   try{const r=await fetch(BRIDGE,{cache:'no-store'});const j=await r.json();
@@ -129,7 +141,7 @@ document.addEventListener('click',async e=>{
   if(t.dataset.save){const code=document.querySelector(`[data-code="${t.dataset.save}"]`).value.trim().toUpperCase();const {error}=await sb.from('rooms').update({game_code:code||null}).eq('id',t.dataset.save).eq('host_id',uid);msg('hostStatus',error?'Erro: '+error.message:'Código salvo!');refresh()}
   if(t.dataset.del&&confirm('Apagar esta sala?')){const {error}=await sb.from('rooms').delete().eq('id',t.dataset.del).eq('host_id',uid);msg('hostStatus',error?'Erro: '+error.message:'Sala apagada.');refresh()}
 });
-$('joinBtn').addEventListener('click',findRoom);$('refreshBtn').addEventListener('click',refresh);
+$('joinBtn').addEventListener('click',findRoom);$('copySiteBtn').addEventListener('click',()=>copy(URL_SITE));$('refreshBtn').addEventListener('click',refresh);
 $('createRoomForm').addEventListener('submit',async e=>{
   e.preventDefault();if(!sb||!uid){msg('createStatus','Backend não configurado.');return}
   const host_name=$('nick').value.trim();try{localStorage.setItem('nick',host_name)}catch{}

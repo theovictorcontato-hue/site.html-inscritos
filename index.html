@@ -485,7 +485,7 @@
 
   <script>
     // ===== CONFIG: link direto do seu ZIP (GitHub Releases, Drive, CDN...). Vazio = usa o arquivo TheoBR_Mod.zip ao lado do index.html
-    var MOD_ZIP_URL = "";
+    var MOD_ZIP_URL = "https://www.mediafire.com/file/4n5qe19bvg2b1ip/TheoBR_Site_corrigido.zip/file";
 
     var dl = document.getElementById('dl-btn');
     if (MOD_ZIP_URL) dl.href = MOD_ZIP_URL;
@@ -493,7 +493,29 @@
     // ===== SALAS REAIS =====
     // ROOMS_API_URL: endpoint que devolve JSON [{"code":"ABCDEF","name":"...","map":"The Skeld","players":4,"max":15}]
     // O mod envia a sala quando alguem cria uma. Sem API ou sem salas = lista vazia (nada falso).
-    var ROOMS_API_URL = "";
+    var ROOMS_API_URL = "[
+  {
+    "code": "ABC123",
+    "name": "Sala TheoBR",
+    "map": "The Skeld",
+    "players": 8,
+    "max": 15
+  },
+  {
+    "code": "XYZ789",
+    "name": "Ranked BR",
+    "map": "Polus",
+    "players": 12,
+    "max": 15
+  },
+  {
+    "code": "QWE456",
+    "name": "Casual",
+    "map": "Mira HQ",
+    "players": 5,
+    "max": 10
+  }
+]";
     var list = document.getElementById('salas-list');
     function esc(t) { var d = document.createElement('div'); d.textContent = t == null ? '' : t; return d.innerHTML; }
     function empty(msg) { list.innerHTML = '<div class="sala"><div class="sala-info"><div class="sala-meta">' + msg + '</div></div></div>'; }
